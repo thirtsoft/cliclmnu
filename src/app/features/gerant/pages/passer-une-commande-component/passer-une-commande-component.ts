@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 // Types (inchangés)
@@ -9,7 +9,7 @@ export type StatutCommande = 'en_attente' | 'validee' | 'livree' | 'annulee';
 export interface ProduitVente {
   id: string;
   nom: string;
-  categorie: 'pain' | 'viennoiserie' | 'patisserie' | 'sandwich';
+  categorie: 'plat' | 'entrée' | 'accompagnement' | 'dessert' | 'boisson';
   prixUnitaire: number;
   unite: string;
   icone: string;
@@ -19,7 +19,7 @@ export interface ProduitVente {
 export interface MatierePremiere {
   id: string;
   nom: string;
-  categorie: 'farine' | 'levure' | 'beurre' | 'oeufs' | 'sucre' | 'sel' | 'autre';
+  categorie: 'viande' | 'legume' | 'epicerie' | 'cremerie' | 'boulangerie';
   prixUnitaire: number;
   unite: string;
   icone: string;
@@ -78,7 +78,7 @@ export class PasserUneCommandeComponent {
   // État de l'application
   typeCommande = signal<CommandeType>('livreur');
   searchTerm = signal('');
-  
+
   // Mobile: contrôle l'affichage du panier drawer
   showPanierDrawer = signal(false);
 
@@ -95,28 +95,31 @@ export class PasserUneCommandeComponent {
   fournisseurSelectionne = signal('');
 
   // Produits de vente
+
   produitsVente = signal<ProduitVente[]>([
-    { id: 'P1', nom: 'Baguette tradition', categorie: 'pain', prixUnitaire: 500, unite: 'pièce', icone: '🥖', stock: 150 },
-    { id: 'P2', nom: 'Baguette complète', categorie: 'pain', prixUnitaire: 600, unite: 'pièce', icone: '🥖', stock: 80 },
-    { id: 'P3', nom: 'Pain de campagne', categorie: 'pain', prixUnitaire: 800, unite: 'pièce', icone: '🍞', stock: 45 },
-    { id: 'P4', nom: 'Croissant', categorie: 'viennoiserie', prixUnitaire: 450, unite: 'pièce', icone: '🥐', stock: 200 },
-    { id: 'P5', nom: 'Pain au chocolat', categorie: 'viennoiserie', prixUnitaire: 500, unite: 'pièce', icone: '🍫', stock: 180 },
-    { id: 'P6', nom: 'Palmier', categorie: 'viennoiserie', prixUnitaire: 400, unite: 'pièce', icone: '🥨', stock: 120 },
-    { id: 'P7', nom: 'Éclair au chocolat', categorie: 'patisserie', prixUnitaire: 650, unite: 'pièce', icone: '🍰', stock: 60 },
-    { id: 'P8', nom: 'Tartelette citron', categorie: 'patisserie', prixUnitaire: 550, unite: 'pièce', icone: '🍋', stock: 40 },
-    { id: 'P9', nom: 'Pain jambon fromage', categorie: 'sandwich', prixUnitaire: 1200, unite: 'pièce', icone: '🥪', stock: 50 },
+    { id: 'R1', nom: 'Burger Classique', categorie: 'plat', prixUnitaire: 8500, unite: 'portion', icone: '🍔', stock: 40 },
+    { id: 'R2', nom: 'Entrecôte Grillée', categorie: 'plat', prixUnitaire: 12000, unite: 'portion', icone: '🥩', stock: 25 },
+    { id: 'R3', nom: 'Salade César', categorie: 'entrée', prixUnitaire: 5500, unite: 'portion', icone: '🥗', stock: 30 },
+    { id: 'R4', nom: 'Pâtes Carbonara', categorie: 'plat', prixUnitaire: 7000, unite: 'portion', icone: '🍝', stock: 50 },
+    { id: 'R5', nom: 'Frites Maison', categorie: 'accompagnement', prixUnitaire: 2500, unite: 'portion', icone: '🍟', stock: 100 },
+    { id: 'R6', nom: 'Tiramisu', categorie: 'dessert', prixUnitaire: 3500, unite: 'pièce', icone: '🍰', stock: 20 },
+    { id: 'R7', nom: 'Mousse au Chocolat', categorie: 'dessert', prixUnitaire: 3000, unite: 'pièce', icone: '🍫', stock: 25 },
+    { id: 'R8', nom: 'Soda 33cl', categorie: 'boisson', prixUnitaire: 1500, unite: 'canette', icone: '🥤', stock: 120 },
+    { id: 'R9', nom: 'Vin Rouge (Verre)', categorie: 'boisson', prixUnitaire: 4000, unite: 'verre', icone: '🍷', stock: 60 },
   ]);
 
   // Matières premières
+
   matieresPremieres = signal<MatierePremiere[]>([
-    { id: 'M1', nom: 'Farine T55', categorie: 'farine', prixUnitaire: 650, unite: 'kg', icone: '🌾', seuilAlerte: 100 },
-    { id: 'M2', nom: 'Farine T65', categorie: 'farine', prixUnitaire: 700, unite: 'kg', icone: '🌾', seuilAlerte: 80 },
-    { id: 'M3', nom: 'Levure fraîche', categorie: 'levure', prixUnitaire: 4500, unite: 'kg', icone: '🧫', seuilAlerte: 10 },
-    { id: 'M4', nom: 'Beurre 84%', categorie: 'beurre', prixUnitaire: 5200, unite: 'kg', icone: '🧈', seuilAlerte: 30 },
-    { id: 'M5', nom: 'Oeufs frais', categorie: 'oeufs', prixUnitaire: 3500, unite: 'boîte (30)', icone: '🥚', seuilAlerte: 20 },
-    { id: 'M6', nom: 'Sucre blanc', categorie: 'sucre', prixUnitaire: 700, unite: 'kg', icone: '🍬', seuilAlerte: 50 },
-    { id: 'M7', nom: 'Sel fin', categorie: 'sel', prixUnitaire: 300, unite: 'kg', icone: '🧂', seuilAlerte: 40 },
-    { id: 'M8', nom: 'Chocolat pâtissier', categorie: 'autre', prixUnitaire: 8000, unite: 'kg', icone: '🍫', seuilAlerte: 15 },
+    { id: 'M1', nom: 'Filet de bœuf', categorie: 'viande', prixUnitaire: 15000, unite: 'kg', icone: '🥩', seuilAlerte: 10 },
+    { id: 'M2', nom: 'Blanc de poulet', categorie: 'viande', prixUnitaire: 5500, unite: 'kg', icone: '🍗', seuilAlerte: 15 },
+    { id: 'M3', nom: 'Pommes de terre', categorie: 'legume', prixUnitaire: 800, unite: 'kg', icone: '🥔', seuilAlerte: 50 },
+    { id: 'M4', nom: 'Huile de friture', categorie: 'epicerie', prixUnitaire: 1800, unite: 'litre', icone: '🫗', seuilAlerte: 20 },
+    { id: 'M5', nom: 'Crème liquide 35%', categorie: 'cremerie', prixUnitaire: 3200, unite: 'litre', icone: '🥛', seuilAlerte: 12 },
+    { id: 'M6', nom: 'Oignons jaunes', categorie: 'legume', prixUnitaire: 600, unite: 'kg', icone: '🧅', seuilAlerte: 10 },
+    { id: 'M7', nom: 'Fromage (Cheddar)', categorie: 'cremerie', prixUnitaire: 6500, unite: 'kg', icone: '🧀', seuilAlerte: 8 },
+    { id: 'M8', nom: 'Tomates grappe', categorie: 'legume', prixUnitaire: 1200, unite: 'kg', icone: '🍅', seuilAlerte: 15 },
+    { id: 'M9', nom: 'Pain Burger (Buns)', categorie: 'boulangerie', prixUnitaire: 450, unite: 'pièce', icone: '🍔', seuilAlerte: 40 },
   ]);
 
   // Panier
@@ -284,7 +287,7 @@ export class PasserUneCommandeComponent {
       this.panierFournisseur.set([]);
       this.fournisseurSelectionne.set('');
     }
-    
+
     // Fermer le drawer sur mobile si ouvert
     this.showPanierDrawer.set(false);
   }
