@@ -24,6 +24,7 @@ export class MainLayoutGerantCompoment {
 
   readonly router = inject(Router);
 
+  /*
   nav: NavItem[] = [
     { route: '/gerant/dashboard', ico: '📊', label: 'Aperçu' },
     { route: '/gerant/livreurs', ico: '👷', label: 'Livreurs' },
@@ -38,7 +39,21 @@ export class MainLayoutGerantCompoment {
     { route: '/gerant/depenses', ico: '💼', label: 'Dépenses' },
     { route: '/gerant/historique-commandes', ico: '📜', label: 'Historique commandes' },
 
+  ]; */
+
+  nav: NavItem[] = [
+    { route: '/gerant/dashboard', ico: '📊', label: 'Aperçu' },
+    { route: '/gerant/commandes', ico: '📋', label: 'Commandes' },
+    { route: '/gerant/tables', ico: '🍽️', label: 'Tables' },
+    { route: '/gerant/menu', ico: '📖', label: 'Menu' },
+    { route: '/gerant/cuisine', ico: '👨‍🍳', label: 'Cuisine' },
+    { route: '/gerant/stocks', ico: '📦', label: 'Stocks' },
+    { route: '/gerant/ventes', ico: '💰', label: 'Ventes' },
+    { route: '/gerant/personnels', ico: '👥', label: 'Personnel' },
+    //  { route: '/gerant/depenses', ico: '💼', label: 'Dépenses' },
+    //  { route: '/gerant/fournisseurs', ico: '🚛', label: 'Fournisseurs' },
   ];
+
 
   dateAuj = new Date().toLocaleDateString('fr-FR', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
@@ -46,20 +61,14 @@ export class MainLayoutGerantCompoment {
 
   get sectionLabel(): string {
     const url = this.router.url;
-
-    if (url.includes('historique-commandes')) return 'Historique commandes';
-    if (url.includes('passser-une-commande')) return 'Passer une commande';
-    if (url.includes('enregistrer-un-retour')) return 'Enregistrer un retour';
-
     if (url.includes('dashboard')) return 'Aperçu';
-    if (url.includes('livreurs')) return 'Livreurs';
-    if (url.includes('livraison')) return 'Livraisons';
-    if (url.includes('production')) return 'Production';
+    if (url.includes('tables')) return 'Tables';
+    if (url.includes('menu')) return 'Menu';
+    if (url.includes('stocks')) return 'Stock';
     if (url.includes('ventes')) return 'Ventes';
     if (url.includes('commandes')) return 'Commandes';
-    if (url.includes('retours')) return 'Retours';
+    if (url.includes('cuisine')) return 'Cuisine';
     if (url.includes('personnels')) return 'Personnels';
-    if (url.includes('depenses')) return 'Dépenses';
 
     return 'Gérant';
   }
